@@ -48,6 +48,7 @@ function Player(position, canvas) {
     }
   }
 
+
   window.onkeyup = function(event) {
     switch(event.key) {
       case 'ArrowUp': // up
@@ -64,6 +65,7 @@ function Player(position, canvas) {
         break;
     }
   }
+
 }
 
 
@@ -86,8 +88,8 @@ Player.prototype.update = function(time) {
       x: Math.sin(this.angle),
       y: Math.cos(this.angle)
     }
-    this.velocity.x -= acceleration.x;
-    this.velocity.y -= acceleration.y;
+    this.velocity.x -= acceleration.x /4;
+    this.velocity.y -= acceleration.y /4;
   }
   // Apply velocity
   this.position.x += this.velocity.x;
@@ -130,4 +132,6 @@ Player.prototype.render = function(time, ctx) {
     ctx.stroke();
   }
   ctx.restore();
+
+  //ctx.fillText(this.angle, this.position.x, this.position.y);
 }

@@ -56,6 +56,7 @@ Then run the command:
 The bundle will automatically be re-created every time you change a source file.  However, you still need to refresh your browser for the changed bundle to take effect.
 
 ## Credits
+
 The frog art was provided by [tgfcoder](http://opengameart.org/users/tgfcoder) of [Open Game Art](http://opengameart.org) as a public domain work.
 
 Mini and Sports Car art was provided by  [bahi](http://opengameart.org/users/bahi) of [Open Game Art](http://opengameart.org) under a CC-BY license.
@@ -63,3 +64,9 @@ Mini and Sports Car art was provided by  [bahi](http://opengameart.org/users/bah
 Sedan and Pickup art was provided by  [bahi](http://opengameart.org/users/bahi) of [Open Game Art](http://opengameart.org) under a CC-BY license.
 
 Game framework HTML5/CSS3/Javascript code was written by course instructor Nathan Bean, and released under a CC-BY license.
+
+---------------
+
+space_background.png was provided by Westbeam @ opengameart.org under a CC0 Public Domain license.
+
+asteroid.png was provided by nightzero @ opengameart.org under a CC-BY 3.0 license.
