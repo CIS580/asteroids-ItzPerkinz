@@ -10,11 +10,12 @@ function Laser(position, angle)
   }
   this.angle = angle;
   this.velocity = {
-    x: Math.sin(this.angle),
-    y: Math.cos(this.angle)
+    x: Math.cos(this.angle),
+    y: Math.sin(this.angle)
   };
   this.state = "moving";
   this.onScreen = true;
+  console.log("Creating laser");
 }
 
 Laser.prototype.update = function(time)
@@ -22,7 +23,7 @@ Laser.prototype.update = function(time)
   switch (this.state) {
     case "moving":
     // move the laser
-    this.position.x -= 15*(this.velocity.x);
+    this.position.x += 15*(this.velocity.x);
     this.position.y -= 15*(this.velocity.y);
 
     //disappear if it goes off screen
@@ -42,7 +43,7 @@ Laser.prototype.render = function(time, ctx)
   ctx.lineWidth = 3;
   ctx.beginPath();
   ctx.moveTo(this.position.x, this.position.y);
-  ctx.lineTo(this.position.x - 15*(this.velocity.x), this.position.y - 15*(this.velocity.y));
+  ctx.lineTo(this.position.x + 15*(this.velocity.x), this.position.y - 15*(this.velocity.y));
   ctx.stroke();
   ctx.lineWidth = 1;
 }

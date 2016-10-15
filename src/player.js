@@ -29,42 +29,7 @@ function Player(position, canvas) {
   this.thrusting = false;
   this.steerLeft = false;
   this.steerRight = false;
-
-  var self = this;
-  window.onkeydown = function(event) {
-    switch(event.key) {
-      case 'ArrowUp': // up
-      case 'w':
-        self.thrusting = true;
-        break;
-      case 'ArrowLeft': // left
-      case 'a':
-        self.steerLeft = true;
-        break;
-      case 'ArrowRight': // right
-      case 'd':
-        self.steerRight = true;
-        break;
-    }
-  }
-
-
-  window.onkeyup = function(event) {
-    switch(event.key) {
-      case 'ArrowUp': // up
-      case 'w':
-        self.thrusting = false;
-        break;
-      case 'ArrowLeft': // left
-      case 'a':
-        self.steerLeft = false;
-        break;
-      case 'ArrowRight': // right
-      case 'd':
-        self.steerRight = false;
-        break;
-    }
-  }
+  this.immune = true;
 
 }
 
@@ -119,7 +84,9 @@ Player.prototype.render = function(time, ctx) {
   ctx.lineTo(10, 10);
   ctx.closePath();
   ctx.strokeStyle = 'white';
+  if (this.immune == true) ctx.strokeStyle = "yellow";
   ctx.stroke();
+  ctx.strokeStyle = "white";
 
   // Draw engine thrust
   if(this.thrusting) {
@@ -133,5 +100,5 @@ Player.prototype.render = function(time, ctx) {
   }
   ctx.restore();
 
-  //ctx.fillText(this.angle, this.position.x, this.position.y);
+  //ctx.fillText((this.angle) / 0.0174533 + 90, this.position.x, this.position.y);
 }
