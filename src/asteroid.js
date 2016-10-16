@@ -23,15 +23,19 @@ function Asteroid(position, canvas, size, angle)
   this.type = size;
   this.speed = this.type+1;
   this.radius = sizes[size];
+  this.immune = false;
+  this.immuneTimer = 0;
 }
 
 Asteroid.prototype.update = function(time)
 {
+  this.immuneTimer += time;
+  if (this.immuneTimer > 2000) this.immune = false;
   switch(this.state) {
     case "moving":
     // move asteroid based on angle (which gives us velocity vectors)
-    this.position.x += this.velocity.x / (this.speed/2);
-    this.position.y -= this.velocity.y / (this.speed/2);
+    this.position.x += this.velocity.x / (this.speed);
+    this.position.y -= this.velocity.y / (this.speed);
 
     // wrap around screen
     if(this.position.x < 0) this.position.x += this.worldWidth;

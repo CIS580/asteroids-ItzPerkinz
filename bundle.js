@@ -23,6 +23,18 @@ var lives = 3;
 var immuneTimer = 0;
 var gameOver = false;
 
+// Audio
+var laser = new Audio("assets/laser1.wav");
+laser.volume = 0.2;
+var alarm = new Audio("assets/alarm.ogg");
+alarm.volume = 0.1;
+var crash = new Audio("assets/crash.wav");
+crash.volume = 0.1;
+var background = new Audio("assets/background.mp3");
+background.loop = true;
+background.volume = 0.1;
+background.play();
+
 // window.onkeypress just randomly stopped working for me halfway through the project so i had to move these outside of the player class so that i could handle lasers as well.
 window.onkeydown = function(event) {
   event.preventDefault()
@@ -32,6 +44,7 @@ window.onkeydown = function(event) {
       var laz = new Laser(player.position, player.angle + (90 * 0.0174533));
       lasers.push(laz);
       timer = 0;
+      laser.play();
     }
   }
   switch(event.key) {
@@ -70,25 +83,15 @@ window.onkeyup = function(event) {
 
 function initLevel()
 {
-  // create asteroids on the top/bot of the screen
-  for (var i = 0; i < Math.floor((9 + level) / 2); i++) {
+  // create asteroids
+  for (var i = 0; i < Math.floor((9 + level)); i++) {
     var randX = Math.random()*canvas.width;                                     // chooses a random x value
-    var side = Math.floor(Math.random()*2);                                     // decides top or bot
-    var position = {x: randX, y: 950*side};                                     // creates the position to pass into asteroid
+    var randY = Math.random()*canvas.height;
+    var position = {x: randX, y: randY};                                         // creates the position to pass into asteroid
     var ang = Math.random()*360 * 0.0174533;                                    // creates the random angle in radians
     var size = Math.floor(Math.random()*4);                                     // determines the size
     var newAstX = new Asteroid(position, canvas, size, ang);
     asteroids.push(newAstX);
-  }
-  // create asteroids on the right/left of the screen
-  for (var i = Math.floor((9 + level)/2); i < 9 + level; i++) {
-    var randY = Math.random()*canvas.height;                                    // chooses a random y value
-    var side = Math.floor(Math.random()*2);                                     // decides right or left
-    var position = {x: 650*side, y: randY};                                     // creates the position to pass into asteroid
-    var ang = Math.random()*360 * 0.0174533;                                    // creates the random angle in radians
-    var size = Math.floor(Math.random()*4);                                     // determines the size
-    var newAstY = new Asteroid(position, canvas, size, ang);
-    asteroids.push(newAstY);
   }
 }
 
@@ -123,7 +126,7 @@ function update(elapsedTime) {
     if (immuneTimer >= 3000) player.immune = false;
     for (var i = 0; i < asteroids.length; i++) {
       asteroids[i].update(elapsedTime);
-      checkForCollisions(asteroids[i]);
+      if (asteroids[i].immune == false) checkForCollisions(asteroids[i]);
     }
     for (var i = 0; i < lasers.length; i++) {
       if (lasers[i].onScreen == false) remove(lasers, lasers[i]);
@@ -224,6 +227,7 @@ function checkForCollisions(ast)
   // asteroid collides with player
   if (distance2 < (ast.radius + 7) && player.immune == false)
   {
+    alarm.play();
     lives--;
     if (lives == 0) gameOver = true;
     else {
@@ -253,6 +257,7 @@ function findPotentials(a)
 
 function shatterAsteroid(laser, asteroid)
 {
+  crash.play();
   if (asteroid.type == 0) {remove(asteroids, asteroid); }
   else {
     var newAng1 = laser.angle + (45*0.0174533);
@@ -261,10 +266,12 @@ function shatterAsteroid(laser, asteroid)
     var newVelY1 = Math.sin(newAng1);
     var newVelX2 = Math.cos(newAng2);
     var newVelY2 = Math.sin(newAng2);
+
     var newPos1 = {x: asteroid.position.x + asteroid.radius*newVelX1,
                    y: asteroid.position.y - asteroid.radius*newVelY1};
     var newPos2 = {x: asteroid.position.x + asteroid.radius*newVelX2,
                    y: asteroid.position.y - asteroid.radius*newVelY2};;
+
     var Ast1 = new Asteroid(newPos1, canvas, asteroid.type-1, newAng1);
     var Ast2 = new Asteroid(newPos2, canvas, asteroid.type-1, newAng2);
     remove(asteroids, asteroid);
@@ -280,17 +287,29 @@ function asteroidCollision(ast1, ast2)
   if (ast1.type == ast2.type) {
     if (ast1.type == 0)
     {
-      remove(asteroids, ast1);
-      remove(asteroids, ast2);
+      var temp = ast1.velocity;
+      ast1.velocity = ast2.velocity;
+      ast2.velocity = temp;
     }
     else {
+    //collide(ast1, ast2);
     shatterAsteroid(ast2, ast1);
     shatterAsteroid(ast1, ast2);
     }
   }
   else if (ast2.type == 0)
   {
-
+    shatterAsteroid(ast2, ast1);
+    remove(asteroids, ast2);
+  }
+  else if (ast1.type - ast2.type >= 2)
+  {
+    shatterAsteroid(ast2, ast1);
+  }
+  else {
+    //collide(ast1, ast2);
+    shatterAsteroid(ast2, ast1);
+    shatterAsteroid(ast1, ast2);
   }
 }
 
@@ -307,6 +326,51 @@ function checkForNextLevel()
     immuneTimer = 0;
     initLevel();
   }
+}
+
+function collide(ast1, ast2)
+{
+  var newVel = {x: ast1.velocity.x - ast2.velocity.x, y: ast1.velocity.y - ast2.velocity.y};
+  var tan = newVel.x / newVel.y;
+  var newAng = Math.atan(tan);
+  // new angles
+  var newAng1 = newAng + (90*0.0174533);
+  var newAng2 = newAng + (45*0.0174533);
+  var newAng3 = newAng - (45*0.0174533);
+  var newAng4 = newAng - (90*0.0174533);
+
+  // new velocity
+  var newVel1 = {x: Math.cos(newAng1), y: Math.sin(newAng1)};
+  var newVel2 = {x: Math.cos(newAng2), y: Math.sin(newAng2)};
+  var newVel3 = {x: Math.cos(newAng3), y: Math.sin(newAng3)};
+  var newVel4 = {x: Math.cos(newAng4), y: Math.sin(newAng4)};
+/*
+  // new positions
+  var newPos1 = {x: ast1.position.x + 32*newVel1.x,
+                 y: ast1.position.y - 32*newVel1.y};
+  var newPos2 = {x: ast1.position.x + 32*newVel2.x ,
+                 y: ast1.position.y - 32*newVel2.y};
+  var newPos3 = {x: ast2.position.x + 32*newVel3.x,
+                 y: ast2.position.y - 32*newVel3.y};
+  var newPos4 = {x: ast2.position.x + 32*newVel4.x,
+                 y: ast2.position.y - 32*newVel4.y};
+*/
+
+  // new asteroids
+  var newAst1 = new Asteroid(ast1.position, canvas, ast1.type-1, newAng1); newAst1.immune = true; newAst1.immuneTimer = 0;
+  var newAst2 = new Asteroid(ast1.position, canvas, ast1.type-1, newAng2); newAst2.immune = true; newAst2.immuneTimer = 0;
+  var newAst3 = new Asteroid(ast2.position, canvas, ast2.type-1, newAng3); newAst3.immune = true; newAst3.immuneTimer = 0;
+  var newAst4 = new Asteroid(ast2.position, canvas, ast2.type-1, newAng4); newAst4.immune = true; newAst4.immuneTimer = 0;
+
+  // remove old asteroids
+  remove(asteroids, ast1);
+  remove(asteroids, ast2);
+
+  //place new asteroids
+  asteroids.push(newAst1);
+  asteroids.push(newAst2);
+  asteroids.push(newAst3);
+  asteroids.push(newAst4);
 }
 
 },{"./asteroid.js":2,"./game.js":3,"./laser.js":4,"./player.js":5}],2:[function(require,module,exports){
@@ -335,15 +399,19 @@ function Asteroid(position, canvas, size, angle)
   this.type = size;
   this.speed = this.type+1;
   this.radius = sizes[size];
+  this.immune = false;
+  this.immuneTimer = 0;
 }
 
 Asteroid.prototype.update = function(time)
 {
+  this.immuneTimer += time;
+  if (this.immuneTimer > 2000) this.immune = false;
   switch(this.state) {
     case "moving":
     // move asteroid based on angle (which gives us velocity vectors)
-    this.position.x += this.velocity.x / (this.speed/2);
-    this.position.y -= this.velocity.y / (this.speed/2);
+    this.position.x += this.velocity.x / (this.speed);
+    this.position.y -= this.velocity.y / (this.speed);
 
     // wrap around screen
     if(this.position.x < 0) this.position.x += this.worldWidth;

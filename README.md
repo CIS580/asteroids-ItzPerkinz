@@ -69,4 +69,10 @@ Game framework HTML5/CSS3/Javascript code was written by course instructor Natha
 
 space_background.png was provided by Westbeam @ opengameart.org under a CC0 Public Domain license.
 
-asteroid.png was provided by nightzero @ opengameart.org under a CC-BY 3.0 license.
+laser1.wav was provided by dklon @ opengameart.org under a CC-BY 3.0 license.
+
+alarm.ogg was provided by yd @ opengameart.org under a CC0 Public Domain license.
+
+crash.wav was taken from TinyWorlds @ opengameart.org under a CC-BY 3.0 license
+
+background.mp3 is the song Pumped by RoccoW from freemusicarchive.org
