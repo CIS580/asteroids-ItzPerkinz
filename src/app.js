@@ -39,7 +39,7 @@ window.onkeydown = function(event) {
   event.preventDefault()
   if (event.keyCode == 32)
   {
-    if(timer > 300 && player.immune == false) {
+    if(timer > 150 && player.immune == false) {
       var laz = new Laser(player.position, player.angle + (90 * 0.0174533));
       lasers.push(laz);
       timer = 0;
@@ -89,7 +89,8 @@ function initLevel()
     var position = {x: randX, y: randY};                                         // creates the position to pass into asteroid
     var ang = Math.random()*360 * 0.0174533;                                    // creates the random angle in radians
     var size = Math.floor(Math.random()*4);                                     // determines the size
-    var newAstX = new Asteroid(position, canvas, size, ang);
+    if (i < 6) { var newAstX = new Asteroid(position, canvas, 3, ang); }
+    else { var newAstX = new Asteroid(position, canvas, size, ang); }
     asteroids.push(newAstX);
   }
 }
@@ -316,7 +317,6 @@ function checkForNextLevel()
 {
   if (asteroids.length == 0)
   {
-    lives++;
     level++;
     score += 50;
     player.position = {x: canvas.width/2, y: canvas.height/2};

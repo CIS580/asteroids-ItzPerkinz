@@ -53,12 +53,12 @@ Player.prototype.update = function(time) {
       x: Math.sin(this.angle),
       y: Math.cos(this.angle)
     }
-    this.velocity.x -= acceleration.x /4;
-    this.velocity.y -= acceleration.y /4;
+    this.velocity.x -= acceleration.x ;
+    this.velocity.y -= acceleration.y ;
   }
   // Apply velocity
-  this.position.x += this.velocity.x;
-  this.position.y += this.velocity.y;
+  this.position.x += this.velocity.x / 16;
+  this.position.y += this.velocity.y / 16;
   // Wrap around the screen
   if(this.position.x < 0) this.position.x += this.worldWidth;
   if(this.position.x > this.worldWidth) this.position.x -= this.worldWidth;
