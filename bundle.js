@@ -81,6 +81,7 @@ window.onkeyup = function(event) {
   }
 }
 
+//initialize the level
 function initLevel()
 {
   // create asteroids
@@ -90,7 +91,7 @@ function initLevel()
     var position = {x: randX, y: randY};                                         // creates the position to pass into asteroid
     var ang = Math.random()*360 * 0.0174533;                                    // creates the random angle in radians
     var size = Math.floor(Math.random()*4);                                     // determines the size
-    if (i < 6) { var newAstX = new Asteroid(position, canvas, 3, ang); }
+    if (i < 3) { var newAstX = new Asteroid(position, canvas, 3, ang); }        // spawn at least 2 large asteroids
     else { var newAstX = new Asteroid(position, canvas, size, ang); }
     asteroids.push(newAstX);
   }
@@ -172,7 +173,7 @@ function render(elapsedTime, ctx) {
 
 }
 
-
+// remove an element from an array
 function remove(array, x)
 {
   var index;
@@ -327,7 +328,7 @@ function checkForNextLevel()
     initLevel();
   }
 }
-
+/*
 function collide(ast1, ast2)
 {
   var newVel = {x: ast1.velocity.x - ast2.velocity.x, y: ast1.velocity.y - ast2.velocity.y};
@@ -344,17 +345,7 @@ function collide(ast1, ast2)
   var newVel2 = {x: Math.cos(newAng2), y: Math.sin(newAng2)};
   var newVel3 = {x: Math.cos(newAng3), y: Math.sin(newAng3)};
   var newVel4 = {x: Math.cos(newAng4), y: Math.sin(newAng4)};
-/*
-  // new positions
-  var newPos1 = {x: ast1.position.x + 32*newVel1.x,
-                 y: ast1.position.y - 32*newVel1.y};
-  var newPos2 = {x: ast1.position.x + 32*newVel2.x ,
-                 y: ast1.position.y - 32*newVel2.y};
-  var newPos3 = {x: ast2.position.x + 32*newVel3.x,
-                 y: ast2.position.y - 32*newVel3.y};
-  var newPos4 = {x: ast2.position.x + 32*newVel4.x,
-                 y: ast2.position.y - 32*newVel4.y};
-*/
+
 
   // new asteroids
   var newAst1 = new Asteroid(ast1.position, canvas, ast1.type-1, newAng1); newAst1.immune = true; newAst1.immuneTimer = 0;
@@ -372,6 +363,7 @@ function collide(ast1, ast2)
   asteroids.push(newAst3);
   asteroids.push(newAst4);
 }
+*/
 
 },{"./asteroid.js":2,"./game.js":3,"./laser.js":4,"./player.js":5}],2:[function(require,module,exports){
 "use strict"
